@@ -2,7 +2,9 @@
 <template>
     <div class="wrapper">
         <div class="main">
-
+            <div class="micro">
+                <i class="fas fa-microphone-alt"></i>
+            </div>
         </div>
         <div class="doc">
             <div class="container">

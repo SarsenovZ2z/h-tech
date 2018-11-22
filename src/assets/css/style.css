@@ -19,6 +19,7 @@ h4 {
     bottom: 0px;
     background-color: purple;
     z-index: -1;
+    display: none;
 }
 
 .doc {
