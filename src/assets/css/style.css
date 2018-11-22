@@ -1,0 +1,74 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,200);
+
+body {
+    width: 100%;
+    min-height: 100%;
+    padding-top: 100px;
+    /* background-color: rgba(255, 255, 200); */
+}
+
+h4 {
+    font-weight: bold;
+}
+
+.main {
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: purple;
+    z-index: -1;
+}
+
+.doc {
+    background-color: white;
+    /* display: none; */
+}
+
+.top {
+    display: inline-block;
+    width: 100%;
+    /* background-color: purple; */
+}
+
+.table-left {
+    padding: 10px;
+    padding-bottom: 0px;
+    margin-bottom: -10px;
+    width: auto;
+    height: auto;
+    display: block;
+    float: left;
+    /* background-color: blue; */
+}
+
+.table-left td {
+    border: 1px solid black;
+    padding: 2px 20px;
+    text-align: center;
+}
+
+.content {
+    padding: 5px;
+    text-align: justify;
+    /* background-color: orange; */
+}
+
+.content textarea {
+    display: block;
+    min-height: 200px;
+    width: 100%;
+}
+
+.bottom {
+    width: 100%;
+    height: 200px;
+    /* background-color: lightgrey; */
+}
+
+.input-hidden {
+    text-align: center;
+    width: 100px;
+    border: none;
+}
