@@ -4,10 +4,11 @@ body {
     width: 100%;
     min-height: 100%;
     padding-top: 100px;
+    font-style: italic;
     /* background-color: rgba(255, 255, 200); */
 }
 
-h4 {
+h5 {
     font-weight: bold;
 }
 
@@ -65,8 +66,13 @@ h4 {
     /* background-color: blue; */
 }
 
+.table-left tr:first-of-type td {
+    padding: 10px 20px;
+}
+
 .table-left td {
     border: 1px solid black;
+    min-width: 90px;
     padding: 2px 20px;
     text-align: center;
 }
@@ -77,10 +83,9 @@ h4 {
     /* background-color: orange; */
 }
 
-.content textarea {
-    display: block;
-    min-height: 200px;
-    width: 100%;
+.input-hidden:focus {
+    background: rgba(230, 230, 255);
+    outline: none;
 }
 
 .bottom {
@@ -93,4 +98,10 @@ h4 {
     text-align: center;
     width: 100px;
     border: none;
+}
+
+@media (max-width: 575px) {
+    .content {
+        display: inherit;
+    }
 }
