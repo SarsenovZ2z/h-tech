@@ -11,21 +11,42 @@ h4 {
     font-weight: bold;
 }
 
-.main {
+.micro {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.micro span {
+    color: #FFFFFF;
+    text-shadow: 0 10px 30px black;
+    font-size: 80pt;
+    transition: 0.1s ease-in;
+}
+
+.micro span:hover {
+    text-shadow: 0 30px 70px black;
+    font-size: 81pt;
+}
+
+#main {
     position: fixed;
     left: 0px;
     right: 0px;
     top: 0px;
     bottom: 0px;
     background-color: purple;
-    z-index: -1;
-    display: none;
+    z-index: 2;
+    /* display: none; */
 }
+
 
 .doc {
     background-color: white;
     /* display: none; */
 }
+
 
 .top {
     display: inline-block;
