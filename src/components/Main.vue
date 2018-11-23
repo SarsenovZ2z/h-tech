@@ -1,4 +1,3 @@
-
 <template>
     <div class="wrapper">
         <div id="main">
