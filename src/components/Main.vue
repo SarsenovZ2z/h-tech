@@ -65,15 +65,39 @@
 </template>
 
 <script>
+// import {data as dataOriginal} from '@/components/scripts/keywords'
+const dataOriginal = [{
+    'label': 'За время наблюдения',
+    'data': [
+        'за время наблюдения',
+        'во время наблюдения',
+        'в период наблюдения'
+    ]
+}, {
+    'label': 'АД',
+    'data': [
+        'давление',
+        'артериальное давление'
+    ]
+}, {
+    'label': 'Предполагаемая тактика',
+    'data': [
+        'предполагаемая тактика',
+        'тактика',
+        'дальнейшие действия'
+    ]
+}];
 export default {
     name: 'Main',
     data() {
         return {
+            data: null,
             recognition: null,
             runtimeTranscription: '',
-            transcription: [],
             language: 'ru-RU',
             isActive: false,
+            currentField: 'content',
+            text: '',
             content: 'Говорите ...',
             tactic:'',
             date: '29.10.2018',
@@ -87,15 +111,65 @@ export default {
     },
     methods: {
         start: function (e) {
-            // this.activate()
+            this.data = dataOriginal.slice();
+            this.activate();
             $('#main').fadeOut('slow');
         },
         test: function (e) {
             console.log(this.testText);
         },
         update: function (text) {
-            // Google API text receive Event
-            console.log(text);
+            for (var i=0;i<text.length;++i)
+            {
+                this.text+=text[i];
+                this.parse();
+            }
+            this.text+=' ';
+        },
+        parse: function() {
+            var keyword = this.tryToGetKeyword();
+            console.log(keyword);
+            if (keyword.index!=-1) {
+                this.updateField(keyword);
+            }
+            console.log(this.currentField);
+            switch(this.currentField) {
+                case 'content':
+                    this.content=this.text;
+                    break;
+                case 'tactic':
+                    this.tactic=this.text;
+                    break;
+            }
+        },
+        updateField: function(keyword) {
+            switch(keyword.label) {
+                case 'Предполагаемая тактика':
+                    this.currentField = 'tactic';
+                    break;
+                case 'тактика2':
+                    this.currentField = 'tactic2';
+                    break;
+            }
+        },
+        tryToGetKeyword() {
+            var text = this.text,
+                maxLen = -1,
+                maxKeyWord = '',
+                label = '',
+                index = -1;
+
+            this.data.forEach(function(item, i) {
+                item.data.forEach(function(word) {
+                    if (text.indexOf(word)!=-1 && maxLen<word.length) {
+                        maxLen = word.length;
+                        maxKeyWord = word;
+                        index = i;
+                        label = item.label;
+                    }
+                });
+            });
+            return {keyword: maxKeyWord, index: index, label: label};
         },
         checkApi: function () {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -111,8 +185,7 @@ export default {
             });
             this.recognition.addEventListener('end', () => {
                 if (this.runtimeTranscription !== '') {
-                    this.transcription.push(this.runtimeTranscription);
-                    this.update(this.transcription);
+                    this.update(this.runtimeTranscription);
                 }
                 this.runtimeTranscription = '';
                 this.recognition.start();
