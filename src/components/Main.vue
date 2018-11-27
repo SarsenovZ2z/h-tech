@@ -54,7 +54,8 @@
                     <div class="col-md-12">
                         <div class="bottom" v-show="tactic.length > 0">
                             <h5>Предполагаемая тактика:</h5>
-                            <p class="tactic input-hidden" v-contenteditable:tactic="true">
+                            <p class="tactic">
+                                <span class="input-hidden" v-contenteditable:tactic="true"></span>
                             </p>
                         </div>
                     </div>
@@ -65,15 +66,72 @@
 </template>
 
 <script>
+// import {data as dataOriginal} from '@/components/scripts/keywords';
+import {Document, Packer, Paragraph} from "docx";
+import saveAs from 'file-saver';
+
+const dataOriginal = [{
+    'label': 'АД',
+    'data': [
+        'давление',
+        'артериальное давление'
+    ]
+},
+// {
+//     'label': 'За время наблюдения',
+//     'data': [
+//         'за время наблюдения',
+//         'во время наблюдения',
+//         'в период наблюдения'
+//     ]
+// },
+
+{
+    'label': 'Предполагаемая тактика',
+    'data': [
+        'предполагаемая тактика',
+        'тактика',
+        'дальнейшие действия'
+    ]
+}, {
+    'label': 'Температура',
+    'data': [
+        'температура'
+    ]
+}, {
+    'label': 'ЧСС',
+    'data': [
+        'пульс',
+        'частота сердечных сокращений'
+    ]
+}, {
+    'label': 'SpO2',
+    'data': [
+        'сатурация',
+        'spo2'
+    ]
+}, {
+    'label': 'ЦВД',
+    'data': [
+        'венозное давление'
+    ]
+}, {
+    'label': 'Врач',
+    'data': [
+        'врач'
+    ]
+}];
 export default {
     name: 'Main',
     data() {
         return {
+            data: null,
             recognition: null,
             runtimeTranscription: '',
-            transcription: [],
             language: 'ru-RU',
             isActive: false,
+            currentField: 'content',
+            text: '',
             content: 'Говорите ...',
             tactic:'',
             date: '29.10.2018',
@@ -87,15 +145,141 @@ export default {
     },
     methods: {
         start: function (e) {
-            // this.activate()
+            this.data = dataOriginal.slice();
+            this.activate();
             $('#main').fadeOut('slow');
+            // this.test();
         },
-        test: function (e) {
-            console.log(this.testText);
+        test: function() {
+            this.data = dataOriginal.slice();
+            this.update(`Пациент доставлен из операционного блока на продолжающейся ИВЛ, после проведения АКШ+МКШ+УУЛП в условиях ИК. Состояние пациента тяжелое, тяжесть обусловлена ранним послеоперационным периодом, объемом перенесенной операции, основным заболеванием, сопутствующей патологией. Сознание – медикаментозная седация, уровень по шкале RASS -5. Дыхание аппаратное, в режиме BiPAP с FiO2-60% (в режиме нормовентиляции). При осмотре: кожные покровы бледно-розовые, признаков нарушения микроциркуляции нет. В легких жесткое дыхание, проводится по всем полям, хрипы не аускультируются. Гемодинамика стабильная, поддержка Норадреналин 100 нг/кг/мин. Тоны сердца приглушены, ритмичные. По дренажам серозно-геморрагическое отделяемое в умеренном количестве. Живот мягкий, доступен глубокой пальпации. Моча по уретральному катетеру, светлая, диурез адекватен. Предполагаемая тактика Антибактериальная терапия, Гастропротекция Контроль витальных функций, коррекция нарушений ВЭБ Адекватная анальгезия, Симптоматическая терапия Динамическое наблюдение, КЩС, БАК, АЧТВ, коагулограмма ЭКГ, рентгенограмма органов грудной клетки При стабильно-положительной динамике - экстубация, перевод в профильное отделение температура 34,0 сатурация 98 давление 150/170 частота сердечных сокращений 58 венозное давление 12`);
+            this.toDocFile();
         },
         update: function (text) {
-            // Google API text receive Event
-            console.log(text);
+            for (var i=0;i<text.length;++i)
+            {
+                this.text+=text[i];
+                if (text[i]!=' ')
+                {
+                    this.parse();
+                }
+            }
+            this.text+=' ';
+        },
+        parse: function() {
+            var keyword = this.tryToGetKeyword();
+            if (keyword.index!=-1) {
+                this.data.splice(keyword.index, 1);
+                var regEx = new RegExp(keyword.keyword.substring(0, keyword.keyword.length-1), "ig");
+                this.text = this.getCurrentField().replace(regEx, '');
+                this.updateField();
+                this.text = '';
+                this.updateCurrentField(keyword);
+            }
+            this.updateField()
+        },
+        updateCurrentField: function(keyword) {
+            switch(keyword.label) {
+                case 'Предполагаемая тактика':
+                    this.currentField = 'tactic';
+                    break;
+                case 'Температура':
+                    this.currentField = 'temperature';
+                    break;
+                case 'АД':
+                    this.currentField = 'ad';
+                    break;
+                case 'SpO2':
+                    this.currentField = 'spo';
+                    break;
+                case 'ЧСС':
+                    this.currentField = 'chss';
+                    break;
+                case 'ЦВД':
+                    this.currentField = 'svd';
+                    break;
+            }
+        },
+        updateField: function() {
+            switch(this.currentField) {
+                case 'content':
+                    this.content=this.text;
+                    break;
+                case 'tactic':
+                    this.tactic=this.text;
+                    break;
+                case 'temperature':
+                    this.temperature=this.text;
+                    break;
+                case 'ad':
+                    this.ad=this.text;
+                    break;
+                case 'spo':
+                    this.spo=this.text;
+                    break;
+                case 'chss':
+                    this.chss=this.text;
+                    break;
+                case 'svd':
+                    this.svd=this.text;
+                    break;
+            }
+        },
+        getCurrentField: function() {
+            switch(this.currentField) {
+                case 'content':
+                    return this.content;
+                case 'tactic':
+                    return this.tactic;
+                case 'temperature':
+                    return this.temperature;
+                case 'ad':
+                    return this.ad;
+                case 'spo':
+                    return this.spo;
+                case 'chss':
+                    return this.chss;
+                case 'svd':
+                    return this.svd;
+            }
+        },
+        tryToGetKeyword() {
+            var text = this.text.toLowerCase(),
+                maxLen = -1,
+                maxKeyWord = '',
+                label = '',
+                index = -1;
+
+            this.data.forEach(function(item, i) {
+                item.data.forEach(function(word) {
+                    if (text.indexOf(word)!=-1 && maxLen<word.length) {
+                        maxLen = word.length;
+                        maxKeyWord = word;
+                        index = i;
+                        label = item.label;
+                    }
+                });
+            });
+            return {keyword: maxKeyWord, index: index, label: label};
+        },
+        toDocFile: function() {
+            const doc = new Document();
+
+            const content = new Paragraph(this.content);
+            const tactic = new Paragraph(this.tactic);
+            // doc.createImage(fs.readFileSync("../images/doch.jpg"));
+
+            doc.addParagraph(content);
+            doc.addParagraph(new Paragraph('\n'));
+            doc.addParagraph(tactic);
+
+            const packer = new Packer();
+
+            packer.toBlob(doc).then(blob => {
+                console.log(blob);
+                saveAs(blob, "example.docx");
+                console.log("Document created successfully");
+            });
         },
         checkApi: function () {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -111,8 +295,7 @@ export default {
             });
             this.recognition.addEventListener('end', () => {
                 if (this.runtimeTranscription !== '') {
-                    this.transcription.push(this.runtimeTranscription);
-                    this.update(this.transcription);
+                    this.update(this.runtimeTranscription);
                 }
                 this.runtimeTranscription = '';
                 this.recognition.start();
