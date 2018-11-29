@@ -77,7 +77,7 @@
 import {Document, Packer, Paragraph} from "docx";
 import saveAs from 'file-saver';
 import firebase from 'firebase';
-
+var date = new Date();
 
 const dataOriginal = [{
     'label': 'АД',
@@ -143,8 +143,8 @@ export default {
             text: '',
             content: 'Говорите ...',
             tactic:'',
-            date: '29.10.2018',
-            time: '13<sup><small>05</small></sup>',
+            date: date.getDate() + '/'+date.getMonth()+'/'+date.getFullYear(),
+            time: date.getHours() + ':' + date.getMinutes(),
             temperature: '',
             spo: '',
             ad: '',
@@ -302,13 +302,13 @@ export default {
              console.log("Error: " + error.code);
           });
           console.log(data['Patient']);
-        },
+          },
         toDatabase(){
-                var database = firebase.database();
-                console.log(this.temperature)
-                var obj = {'Temperature': this.temperature, 'Saturation': this.spo, 'Pressure':this.ad, 'Pulse': this.chss, 'Svd':this.svd, 'Content': this.content, 'Tactic':this.tactic};
-                console.log(obj)
-                database.ref('Patient').push(obj)
+          var database = firebase.database();
+          console.log(this.temperature)
+          var obj = {'Temperature': this.temperature, 'Saturation': this.spo, 'Pressure':this.ad, 'Pulse': this.chss, 'Svd':this.svd, 'Content': this.content, 'Tactic':this.tactic};
+          console.log(obj)
+          database.ref('Patient').push(obj)
         },
         checkApi: function () {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
