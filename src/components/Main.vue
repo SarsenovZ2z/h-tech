@@ -5,6 +5,7 @@
                 <span @click="start"><i class="fa fa-microphone-alt"></i></span>
             </div>
         </div>
+
         <div class="doc">
             <div class="container">
                 <div class="row">
@@ -61,14 +62,22 @@
                     </div>
                 </div>
             </div>
+            <button class = "stop" v-on:click="activate">Stop</button>
+            <button v-on:click="toDatabase">Insert to Database</button>
         </div>
+
+            <!-- <span @click="toDatabase"><i class="fas fa-database"></i></span> -->
+
+
     </div>
 </template>
-
+<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
 <script>
 // import {data as dataOriginal} from '@/components/scripts/keywords';
 import {Document, Packer, Paragraph} from "docx";
 import saveAs from 'file-saver';
+import firebase from 'firebase';
+
 
 const dataOriginal = [{
     'label': 'АД',
@@ -146,14 +155,15 @@ export default {
     methods: {
         start: function (e) {
             this.data = dataOriginal.slice();
-            this.activate();
+            // this.activate();
             $('#main').fadeOut('slow');
-            // this.test();
+            this.test();
         },
         test: function() {
             this.data = dataOriginal.slice();
             this.update(`Пациент доставлен из операционного блока на продолжающейся ИВЛ, после проведения АКШ+МКШ+УУЛП в условиях ИК. Состояние пациента тяжелое, тяжесть обусловлена ранним послеоперационным периодом, объемом перенесенной операции, основным заболеванием, сопутствующей патологией. Сознание – медикаментозная седация, уровень по шкале RASS -5. Дыхание аппаратное, в режиме BiPAP с FiO2-60% (в режиме нормовентиляции). При осмотре: кожные покровы бледно-розовые, признаков нарушения микроциркуляции нет. В легких жесткое дыхание, проводится по всем полям, хрипы не аускультируются. Гемодинамика стабильная, поддержка Норадреналин 100 нг/кг/мин. Тоны сердца приглушены, ритмичные. По дренажам серозно-геморрагическое отделяемое в умеренном количестве. Живот мягкий, доступен глубокой пальпации. Моча по уретральному катетеру, светлая, диурез адекватен. Предполагаемая тактика Антибактериальная терапия, Гастропротекция Контроль витальных функций, коррекция нарушений ВЭБ Адекватная анальгезия, Симптоматическая терапия Динамическое наблюдение, КЩС, БАК, АЧТВ, коагулограмма ЭКГ, рентгенограмма органов грудной клетки При стабильно-положительной динамике - экстубация, перевод в профильное отделение температура 34,0 сатурация 98 давление 150/170 частота сердечных сокращений 58 венозное давление 12`);
-            this.toDocFile();
+            // this.toDocFile();
+            this.readDatabase();
         },
         update: function (text) {
             for (var i=0;i<text.length;++i)
@@ -280,6 +290,25 @@ export default {
                 saveAs(blob, "example.docx");
                 console.log("Document created successfully");
             });
+        },
+        readDatabase(){
+          var ref = firebase.database().ref();
+          var data;
+          ref.on("value", function(snapshot) {
+            data = snapshot.val();
+            // console.log(snapshot.val());
+            console.log(data)
+          }, function (error) {
+             console.log("Error: " + error.code);
+          });
+          console.log(data['Patient']);
+        },
+        toDatabase(){
+                var database = firebase.database();
+                console.log(this.temperature)
+                var obj = {'Temperature': this.temperature, 'Saturation': this.spo, 'Pressure':this.ad, 'Pulse': this.chss, 'Svd':this.svd, 'Content': this.content, 'Tactic':this.tactic};
+                console.log(obj)
+                database.ref('Patient').push(obj)
         },
         checkApi: function () {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

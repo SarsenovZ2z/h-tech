@@ -15,7 +15,7 @@
   "dependencies": {
     "docx": "^4.4.0",
     "file-saver": "^2.0.0",
-    "firebase": "^5.5.7",
+    "firebase": "^5.5.9",
     "fs": "0.0.1-security",
     "vue": "^2.5.2",
     "vue-contenteditable-directive": "^1.2.0",

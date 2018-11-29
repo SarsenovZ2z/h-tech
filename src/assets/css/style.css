@@ -76,6 +76,30 @@ h5 {
     padding: 2px 20px;
     text-align: center;
 }
+button {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  color: #333;
+  background-color:#fff;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: '微软雅黑',arail;
+  cursor: pointer;
+  float:right;
+  margin-right: 10px;
+}
+.stop {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  color: #333;
+  background-color:#fff;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: '微软雅黑',arail;
+  cursor: pointer;
+  float:right;
+  margin-right: 100px;
+}
 
 .content {
     padding: 5px;
