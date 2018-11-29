@@ -7,7 +7,76 @@
         </div>
 
         <div class="doc">
-            <div class="container">
+            <nav class="navbar fixed-top justify-content-between">
+              <a class="navbar-brand" href="#">Arbio</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+                <div class="btn-group" role="group">
+                    <button class = "btn btn-danger stop" v-on:click="activate"><span v-if="isActive">Stop</span><span v-else>Start</span></button>
+                    <button class="btn btn-success" v-on:click="toDatabase">Insert to Database</button>
+                </div>
+            </nav>
+
+            <div class="old" v-for="old in oldData">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="top">
+                                <h5><center><i>ОАРИТ</i></center></h5>
+                                <div class="table-left">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="2" class="input-hidden" >{{ old.Date }}</td>
+                                                <td class="input-hidden" v-html="old.Time"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>t-ра</td>
+                                                <td class="input-hidden">{{ old.Temperature }}</td>
+                                                <td><sup><small>0</small></sup>С</td>
+                                            </tr>
+                                            <tr>
+                                                <td>SpO<sub><small>2</small></sub></td>
+                                                <td class="input-hidden">{{ old.Saturation }}</td>
+                                                <td>%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>АД</td>
+                                                <td class="input-hidden">{{ old.Pressure }}</td>
+                                                <td>мм.рт.ст.</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ЧСС</td>
+                                                <td class="input-hidden">{{ old.Pulse }}</td>
+                                                <td>в мин</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ЦВД</td>
+                                                <td class="input-hidden">{{ old.Svd }}</td>
+                                                <td>мм.рт.ст.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p class="content">
+                                    <span class="input-hidden">{{ old.Content }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="bottom" v-show="old.Tactic.length > 0">
+                                <h5>Предполагаемая тактика:</h5>
+                                <p class="tactic">
+                                    <span class="input-hidden">{{ old.Tactic }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" id="current">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="top">
@@ -62,8 +131,6 @@
                     </div>
                 </div>
             </div>
-            <button class = "stop" v-on:click="activate">Stop</button>
-            <button v-on:click="toDatabase">Insert to Database</button>
         </div>
 
             <!-- <span @click="toDatabase"><i class="fas fa-database"></i></span> -->
@@ -86,14 +153,14 @@ const dataOriginal = [{
         'артериальное давление'
     ]
 },
-// {
-//     'label': 'За время наблюдения',
-//     'data': [
-//         'за время наблюдения',
-//         'во время наблюдения',
-//         'в период наблюдения'
-//     ]
-// },
+{
+    'label': 'За время наблюдения',
+    'data': [
+        'за время наблюдения',
+        'во время наблюдения',
+        'в период наблюдения'
+    ]
+},
 
 {
     'label': 'Предполагаемая тактика',
@@ -134,6 +201,7 @@ export default {
     name: 'Main',
     data() {
         return {
+            oldData: [],
             data: null,
             recognition: null,
             runtimeTranscription: '',
@@ -144,7 +212,7 @@ export default {
             content: 'Говорите ...',
             tactic:'',
             date: '29.10.2018',
-            time: '13<sup><small>05</small></sup>',
+            time: '13:05',
             temperature: '',
             spo: '',
             ad: '',
@@ -154,16 +222,16 @@ export default {
     },
     methods: {
         start: function (e) {
+            this.readDatabase();
             this.data = dataOriginal.slice();
-            // this.activate();
+            this.activate();
             $('#main').fadeOut('slow');
-            this.test();
+            this.isActive = true;
+            // this.test();
         },
         test: function() {
-            this.data = dataOriginal.slice();
             this.update(`Пациент доставлен из операционного блока на продолжающейся ИВЛ, после проведения АКШ+МКШ+УУЛП в условиях ИК. Состояние пациента тяжелое, тяжесть обусловлена ранним послеоперационным периодом, объемом перенесенной операции, основным заболеванием, сопутствующей патологией. Сознание – медикаментозная седация, уровень по шкале RASS -5. Дыхание аппаратное, в режиме BiPAP с FiO2-60% (в режиме нормовентиляции). При осмотре: кожные покровы бледно-розовые, признаков нарушения микроциркуляции нет. В легких жесткое дыхание, проводится по всем полям, хрипы не аускультируются. Гемодинамика стабильная, поддержка Норадреналин 100 нг/кг/мин. Тоны сердца приглушены, ритмичные. По дренажам серозно-геморрагическое отделяемое в умеренном количестве. Живот мягкий, доступен глубокой пальпации. Моча по уретральному катетеру, светлая, диурез адекватен. Предполагаемая тактика Антибактериальная терапия, Гастропротекция Контроль витальных функций, коррекция нарушений ВЭБ Адекватная анальгезия, Симптоматическая терапия Динамическое наблюдение, КЩС, БАК, АЧТВ, коагулограмма ЭКГ, рентгенограмма органов грудной клетки При стабильно-положительной динамике - экстубация, перевод в профильное отделение температура 34,0 сатурация 98 давление 150/170 частота сердечных сокращений 58 венозное давление 12`);
             // this.toDocFile();
-            this.readDatabase();
         },
         update: function (text) {
             for (var i=0;i<text.length;++i)
@@ -207,6 +275,9 @@ export default {
                     break;
                 case 'ЦВД':
                     this.currentField = 'svd';
+                    break;
+                case 'За время наблюдения':
+                    this.currentField = 'content';
                     break;
             }
         },
@@ -291,24 +362,23 @@ export default {
                 console.log("Document created successfully");
             });
         },
-        readDatabase(){
-          var ref = firebase.database().ref();
-          var data;
-          ref.on("value", function(snapshot) {
-            data = snapshot.val();
-            // console.log(snapshot.val());
-            console.log(data)
-          }, function (error) {
-             console.log("Error: " + error.code);
-          });
-          console.log(data['Patient']);
+        readDatabase() {
+            var ref = firebase.database().ref();
+            var self = this;
+            ref.on("value", function(snapshot) {
+                self.oldData = Object.values(snapshot.val()['Patient']);
+                window.setTimeout(function() {
+                    console.log(self.$refs.current);
+                    window.location.hash = '#current';
+                }, 1000);
+            }, function (error) {
+                console.log("Error: " + error.code);
+            });
         },
-        toDatabase(){
-                var database = firebase.database();
-                console.log(this.temperature)
-                var obj = {'Temperature': this.temperature, 'Saturation': this.spo, 'Pressure':this.ad, 'Pulse': this.chss, 'Svd':this.svd, 'Content': this.content, 'Tactic':this.tactic};
-                console.log(obj)
-                database.ref('Patient').push(obj)
+        toDatabase() {
+            var database = firebase.database();
+            var obj = {'Temperature': this.temperature, 'Saturation': this.spo, 'Pressure':this.ad, 'Pulse': this.chss, 'Svd':this.svd, 'Content': this.content, 'Tactic':this.tactic, 'Date': this.date, 'Time': this.time};
+            database.ref('Patient').push(obj);
         },
         checkApi: function () {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

@@ -3,9 +3,22 @@
 body {
     width: 100%;
     min-height: 100%;
-    padding-top: 100px;
     font-style: italic;
     /* background-color: rgba(255, 255, 200); */
+}
+
+nav {
+    background-color: purple;
+}
+
+nav a {
+    font-size: 30px!important;
+    font-weight: bold;
+    color: White;
+}
+
+nav a:hover {
+    color: lightblue;
 }
 
 h5 {
@@ -26,6 +39,10 @@ h5 {
     transition: 0.1s ease-in;
 }
 
+.old {
+    color: grey!important;
+}
+
 .micro span:hover {
     text-shadow: 0 30px 70px black;
     font-size: 81pt;
@@ -42,8 +59,8 @@ h5 {
     /* display: none; */
 }
 
-
 .doc {
+    padding-top: 100px;
     background-color: white;
     /* display: none; */
 }
@@ -63,7 +80,7 @@ h5 {
     height: auto;
     display: block;
     float: left;
-    /* background-color: blue; */
+    /* background-color: purple; */
 }
 
 .table-left tr:first-of-type td {
@@ -75,30 +92,6 @@ h5 {
     min-width: 90px;
     padding: 2px 20px;
     text-align: center;
-}
-button {
-  padding: 10px 20px;
-  border: 1px solid #ddd;
-  color: #333;
-  background-color:#fff;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: '微软雅黑',arail;
-  cursor: pointer;
-  float:right;
-  margin-right: 10px;
-}
-.stop {
-  padding: 10px 20px;
-  border: 1px solid #ddd;
-  color: #333;
-  background-color:#fff;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: '微软雅黑',arail;
-  cursor: pointer;
-  float:right;
-  margin-right: 100px;
 }
 
 .content {
