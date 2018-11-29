@@ -144,7 +144,7 @@
 import {Document, Packer, Paragraph} from "docx";
 import saveAs from 'file-saver';
 import firebase from 'firebase';
-
+var date = new Date();
 
 const dataOriginal = [{
     'label': 'АД',
@@ -211,8 +211,8 @@ export default {
             text: '',
             content: 'Говорите ...',
             tactic:'',
-            date: '29.10.2018',
-            time: '13:05',
+            date: date.getDate() + '/'+date.getMonth()+'/'+date.getFullYear(),
+            time: date.getHours() + ':' + date.getMinutes(),
             temperature: '',
             spo: '',
             ad: '',
