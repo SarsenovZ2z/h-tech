@@ -3,5 +3,9 @@ export var content3 = {
     'data': [
         'сатурация',
         'spo2'
+	'SPO2'
+	'SPO 2'
+	'spo 2'
+        'saturation'
     ]
 };
