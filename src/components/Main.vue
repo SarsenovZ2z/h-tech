@@ -140,63 +140,13 @@
 </template>
 <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
 <script>
-// import {data as dataOriginal} from '@/components/scripts/keywords';
+import {data as dataOriginal} from '@/components/scripts/keywords';
 import {Document, Packer, Paragraph} from "docx";
 import saveAs from 'file-saver';
 import firebase from 'firebase';
 var date = new Date();
 
-const dataOriginal = [{
-    'label': 'АД',
-    'data': [
-        'давление',
-        'артериальное давление'
-    ]
-},
-{
-    'label': 'За время наблюдения',
-    'data': [
-        'за время наблюдения',
-        'во время наблюдения',
-        'в период наблюдения'
-    ]
-},
 
-{
-    'label': 'Предполагаемая тактика',
-    'data': [
-        'предполагаемая тактика',
-        'тактика',
-        'дальнейшие действия'
-    ]
-}, {
-    'label': 'Температура',
-    'data': [
-        'температура'
-    ]
-}, {
-    'label': 'ЧСС',
-    'data': [
-        'пульс',
-        'частота сердечных сокращений'
-    ]
-}, {
-    'label': 'SpO2',
-    'data': [
-        'сатурация',
-        'spo2'
-    ]
-}, {
-    'label': 'ЦВД',
-    'data': [
-        'венозное давление'
-    ]
-}, {
-    'label': 'Врач',
-    'data': [
-        'врач'
-    ]
-}];
 export default {
     name: 'Main',
     data() {
