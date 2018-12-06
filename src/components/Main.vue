@@ -12,9 +12,10 @@
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
-                <div class="btn-group" role="group">
+                <div class="btn-group" role="group" v-if="isBack">
                     <button class = "btn btn-danger stop" v-on:click="activate"><span v-if="isActive">Stop</span><span v-else>Start</span></button>
                     <button class="btn btn-success" v-on:click="toDatabase">Insert to Database</button>
+                    <button class="btn btn-primary" v-on:click="saveToPdf">Print PDF</button>
                 </div>
             </nav>
 
@@ -157,6 +158,7 @@ export default {
             runtimeTranscription: '',
             language: 'ru-RU',
             isActive: false,
+            isBack: false,
             currentField: 'content',
             text: '',
             content: 'Говорите ...',
@@ -177,6 +179,7 @@ export default {
             this.activate();
             $('#main').fadeOut('slow');
             this.isActive = true;
+            this.isBack = true;
             // this.test();
         },
         test: function() {
@@ -360,6 +363,9 @@ export default {
                 this.recognition.stop();
                 this.recognition = null;
             }
+        },
+        saveToPdf: function() {
+            window.print();
         },
     },
 };
