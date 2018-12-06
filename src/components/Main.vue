@@ -8,7 +8,7 @@
 
         <div class="doc">
             <nav class="navbar fixed-top justify-content-between">
-              <a class="navbar-brand" href="#">Arbio</a>
+              <a class="navbar-brand" href="/">Arbio</a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
